@@ -1,0 +1,16 @@
+default[:mongodb] = {}
+default[:mongodb][:version] = "2.0.6"
+default[:mongodb][:prefix] = "/usr/local"
+default[:mongodb][:dbpath] = "/var/lib/mongodb"
+default[:mongodb][:journal] = "true"
+default[:mongodb][:logpath] = "/var/log/mongodb/mongodb.log"
+default[:mongodb][:logappend] = "true"
+default[:mongodb][:bind_ip] = "127.0.0.1"
+default[:mongodb][:port] = "27017"
+default[:mongodb][:rest] = "true"
+default[:mongodb][:auth] = "false"
+default[:mongodb][:noauth] = "true"
+default[:mongodb][:user] = "mongodb"
+default[:mongodb][:gid] = "nogroup"
+default[:mongodb][:group] = "mongodb"
+
