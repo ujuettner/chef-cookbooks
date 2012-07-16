@@ -1,21 +1,17 @@
 remote_file "/tmp/mongodb-linux-i686-#{node[:mongodb][:version]}.tgz" do
   source "http://fastdl.mongodb.org/linux/mongodb-linux-i686-#{node[:mongodb][:version]}.tgz"
-  only_if { node[:instance][:architecture] == "i386" }
 end
 
 remote_file "/tmp/mongodb-linux-x86_64-#{node[:mongodb][:version]}.tgz" do
   source "http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-#{node[:mongodb][:version]}.tgz"
-  not_if { node[:instance][:architecture] == "i386" }
 end
 
 execute "tar xvfz /tmp/mongodb-linux-i686-#{node[:mongodb][:version]}.tgz" do
   cwd "/tmp"
-  only_if { node[:instance][:architecture] == "i386" }
 end
 
 execute "tar xvfz /tmp/mongodb-linux-x86_64-#{node[:mongodb][:version]}.tgz" do
   cwd "/tmp"
-  not_if { node[:instance][:architecture] == "i386" }
 end
 
 enclosed_node = node
