@@ -11,6 +11,5 @@ default[:mongodb][:rest] = "true"
 default[:mongodb][:auth] = "false"
 default[:mongodb][:noauth] = "true"
 default[:mongodb][:user] = "mongodb"
-default[:mongodb][:gid] = "nogroup"
 default[:mongodb][:group] = "mongodb"
 
