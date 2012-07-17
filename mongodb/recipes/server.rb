@@ -10,6 +10,7 @@ execute "tar xvfz /tmp/#{mongodb_package_basename}.tgz" do
   cwd "/tmp"
 end
 
+# TODO: Check, whether enclosed_node is really needed.
 enclosed_node = node
 ruby_block "Install binaries" do
   block do
