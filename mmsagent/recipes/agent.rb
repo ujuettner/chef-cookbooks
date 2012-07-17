@@ -26,16 +26,22 @@ execute "sed -i -e 's/@API_KEY@/#{node[:mmsagent][:apikey]}/g' -e 's/@SECRET_KEY
   cwd "/tmp"
 end
 
-enclosed_node = node
 ruby_block "Install files." do
   block do
     Dir.glob(["/tmp/mms-agent/*.py", "/tmp/mms-agent/README"]).each do |file|
       if not File.directory?(file)
-        FileUtils.install file, "#{enclosed_node[:mmsagent][:installdir]}", :mode => 0644
-        FileUtils.chown "root", "root", "#{enclosed_node[:mmsagent][:installdir]}/#{File.basename(file)}"
+        FileUtils.install file, "#{node[:mmsagent][:installdir]}", :mode => 0644
+        FileUtils.chown "root", "root", "#{node[:mmsagent][:installdir]}/#{File.basename(file)}"
       end
     end
   end
+end
+
+directory node[:mmsagent][:logpath] do
+  action :create
+  owner node[:mmsagent][:user]
+  group node[:mmsagent][:group]
+  mode "0755"
 end
 
 template "/etc/init.d/mmsagent" do
@@ -43,5 +49,11 @@ template "/etc/init.d/mmsagent" do
   owner "root"
   group "root"
   mode "0755"
+end
+
+service "mmsagent" do
+  service_name "mmsagent"
+  supports :status => true, :restart => true, :reload => false, "force-reload" => true, "force-stop" => true
+  action :enable
 end
 

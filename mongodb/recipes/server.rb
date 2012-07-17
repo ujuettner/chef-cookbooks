@@ -10,14 +10,12 @@ execute "tar xvfz /tmp/#{mongodb_package_basename}.tgz" do
   cwd "/tmp"
 end
 
-# TODO: Check, whether enclosed_node is really needed.
-enclosed_node = node
 ruby_block "Install binaries." do
   block do
     Dir.glob("/tmp/#{mongodb_package_basename}/bin/*").each do |binary|
       if not File.directory?(binary) and File.executable?(binary)
-        FileUtils.install binary, "#{enclosed_node[:mongodb][:prefix]}/bin", :mode => 0755
-        FileUtils.chown "root", "root", "#{enclosed_node[:mongodb][:prefix]}/bin/#{File.basename(binary)}"
+        FileUtils.install binary, "#{node[:mongodb][:prefix]}/bin", :mode => 0755
+        FileUtils.chown "root", "root", "#{node[:mongodb][:prefix]}/bin/#{File.basename(binary)}"
       end
     end
   end
