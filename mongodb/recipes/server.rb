@@ -29,7 +29,7 @@ user node[:mongodb][:user] do
   gid node[:mongodb][:group]
   home "/home/mongodb"
   # TODO: Decide whether to set "real" login shell and to create the homedir!
-  shell "/bin/false"
+  shell "/bin/bash"
   supports :manage_home => true
   action :create
 end
@@ -40,10 +40,31 @@ directory node[:mongodb][:dbpath] do
   mode "0755"
 end
 
-directory File.dirname(node[:mongodb][:logpath]) do
+directory node[:mongodb][:logpath] do
   action :create
   owner node[:mongodb][:user]
   group node[:mongodb][:group]
   mode "0755"
+end
+
+template "/etc/init.d/mongodb" do
+  source "mongodb.init.erb"
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
+service "mongodb" do
+  service_name "mongodb"
+  supports :status => true, :restart => true, :reload => false, "force-reload" => true, "force-stop" => true
+  action :enable
+end
+
+template "/etc/mongodb.conf" do
+  source "mongodb.conf.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+  notifies :restart, resources(:service => "mongodb"), :immediately
 end
 
