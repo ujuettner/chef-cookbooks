@@ -54,6 +54,6 @@ end
 service "mmsagent" do
   service_name "mmsagent"
   supports :status => true, :restart => true, :reload => false, "force-reload" => true, "force-stop" => true
-  action :enable
+  action [:enable, :start]
 end
 
