@@ -63,5 +63,7 @@ template "/etc/mongodb.conf" do
   group "root"
   mode "0644"
   notifies :restart, resources(:service => "mongodb"), :immediately
+  # TODO: Restart of mmsagent necessary? What if it's not installed?
+  #notifies :restart, resources(:service => "mmsagent"), :immediately
 end
 
