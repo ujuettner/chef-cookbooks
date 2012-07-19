@@ -1,6 +1,6 @@
 # Hmm, will the instance's machine type always match the tarball's filename?
 mongodb_package_basename = "mongodb-linux-#{node[:kernel][:machine]}-#{node[:mongodb][:version]}"
-Chef::Log.info("mongodb_package_basename: #{mongodb_package_basename}")
+Chef::Log.debug("mongodb_package_basename: #{mongodb_package_basename}")
 
 remote_file "/tmp/#{mongodb_package_basename}.tgz" do
   source "http://fastdl.mongodb.org/linux/#{mongodb_package_basename}.tgz"
@@ -10,14 +10,13 @@ execute "tar xvfz /tmp/#{mongodb_package_basename}.tgz" do
   cwd "/tmp"
 end
 
-# TODO: Check, whether enclosed_node is really needed.
-enclosed_node = node
-ruby_block "Install binaries" do
+ruby_block "Install binaries." do
   block do
-    # TODO: Get the list of binaries dynamically instead of using a static array.
-    %w{bsondump mongo mongod mongodump mongoexport mongofiles mongoimport mongorestore mongos mongosniff mongostat mongotop}.each do |binary|
-      FileUtils.install "/tmp/#{mongodb_package_basename}/bin/#{binary}", "#{enclosed_node[:mongodb][:prefix]}/bin", :mode => 0755
-      FileUtils.chown "root", "root", "#{enclosed_node[:mongodb][:prefix]}/bin/#{binary}"
+    Dir.glob("/tmp/#{mongodb_package_basename}/bin/*").each do |binary|
+      if not File.directory?(binary) and File.executable?(binary)
+        FileUtils.install binary, "#{node[:mongodb][:prefix]}/bin", :mode => 0755
+        FileUtils.chown "root", "root", "#{node[:mongodb][:prefix]}/bin/#{File.basename(binary)}"
+      end
     end
   end
 end
@@ -28,10 +27,7 @@ end
 
 user node[:mongodb][:user] do
   gid node[:mongodb][:group]
-  home "/home/mongodb"
-  # TODO: Decide whether to set "real" login shell and to create the homedir!
-  shell "/bin/bash"
-  supports :manage_home => true
+  shell "/bin/false"
   action :create
 end
 
@@ -67,5 +63,7 @@ template "/etc/mongodb.conf" do
   group "root"
   mode "0644"
   notifies :restart, resources(:service => "mongodb"), :immediately
+  # TODO: Restart of mmsagent necessary? What if it's not installed?
+  #notifies :restart, resources(:service => "mmsagent"), :immediately
 end
 
