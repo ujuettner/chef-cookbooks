@@ -1,0 +1,10 @@
+maintainer       "Udo Juettner"
+maintainer_email "udo.juettner@gmail.com"
+license          "Apache 2.0"
+description      "Downloads, installs and configures the graphing system Graphite."
+version          "0.1"
+recipe           "graphite::whisper', 'Installs and configures files needed for Graphite's database enginei whisper."
+recipe           "graphite::carbon', 'Installs and configures files needed for Graphite's processing backend carbon."
+recipe           "graphite::webapp', 'Installs and configures files needed for Graphite's web application."
+supports         "ubuntu"
+
